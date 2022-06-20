@@ -1,4 +1,4 @@
-module.exports = [
+exports.products = [
   {
     productName: "iPhone 13 Pro max",
     price: 1299,
