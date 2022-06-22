@@ -1,34 +1,29 @@
 const amqp = require("amqplib");
-const { orderStatus } = require("./orders.data");
 
-const orderConsumer = async () => {
+const consumer = async () => {
   try {
     const exchange = "orders";
-    console.log("order Consumer");
+    const consumerStatus = "1";
     const connection = await amqp.connect("amqp://localhost:5672");
     const channel = await connection.createChannel();
-    channel.prefetch(1);
+    await channel.prefetch(1);
     await channel.assertExchange(exchange, "direct", { durable: false });
     const q = await channel.assertQueue("", { exclusive: true });
-    for (let status of Object.values(orderStatus)) {
-      await channel.bindQueue(q.queue, exchange, status);
-    }
-
+    await channel.bindQueue(q.queue, exchange, consumerStatus);
     channel.consume(
       q.queue,
       (msg) => {
         console.log(msg.content.toString());
-        console.log(msg.fields.routingKey);
-        console.log(msg.properties.priority);
-        for (let i = 0; i < 1999999999; i++) {}
+        for (let i = 0; i < 999999999; i++) {}
         console.log("Done");
+
         channel.ack(msg);
       },
-      { noAck: false, priority: 1 }
+      { noAck: false }
     );
   } catch (error) {
-    throw new Error(error.message, error.status);
+    throw new Error(error.message);
   }
 };
 
-orderConsumer();
+consumer();
