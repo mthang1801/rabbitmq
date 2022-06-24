@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mthang1801/rabbitmq#readme",
   "dependencies": {
-    "amqplib": "^0.10.0"
+    "amqplib": "^0.10.0",
+    "uuid": "^8.3.2"
   }
 }
